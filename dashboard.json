@@ -1,0 +1,49 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/FFRONGG/dashboard/main/district.json",
+    "format": {"type": "topojson", "feature": "geodata"}
+  },
+  "transform": [
+    {
+      "lookup": "properties.dcode",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/FFRONGG/dashboard/main/school.csv"
+        },
+        "key": "dcode",
+        "fields": ["count"]
+      }
+    }
+  ],
+  "hconcat": [
+    {
+      "width": 300,
+      "height": 300,
+      "projection": {"type": "Mercator"},
+      "mark": {"type": "geoshape"},
+      "encoding": {
+        "color": {"field": "count", "type": "quantitative"},
+        "opacity": {"condition": {"param": "pts", "value": "1"}, "value": 0.3}
+      }
+    },
+    {
+      "width": 300,
+      "height": 300,
+      "mark": "bar",
+      "params": [
+        {
+          "name": "pts",
+          "select": {"type": "point", "encodings": ["x"], "on": "mouseover"}
+        }
+      ],
+      "encoding": {
+        "x": {"field": "properties.dcode", "type": "nominal"},
+        "y": {"field": "count", "type": "quantitative"},
+        "color": {"field": "count", "type": "quantitative"},
+        "opacity": {"condition": {"param": "pts", "value": 1}, "value": 0.5}
+      }
+    }
+  ],
+  "config": {}
+}
